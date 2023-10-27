@@ -94,22 +94,34 @@ void callback(char *topic, byte *payload, unsigned int length)
   if (sTopic.indexOf("/Sensors/") > -1)
   {
     int iSensor = sTopic.substring(sTopic.indexOf("/Sensors/") + 9).toInt();
-    int iAddr = trunc(iSensor / 8) + 1;
-    int iPort = iSensor % 8 - 1;
-    // Serial.println("SensorNr:" + String(iSensor) +  "  AdressNr: " + String(iAddr) + "  Port: " + String(iPort));
+    //int iAddr = trunc(iSensor / 8) + 1;  // Gives The module number, first  part of 1.2, 2.2 etc,.  This formula is wrong
+    
+    //Note the interface into iTrain doesn't use the address value.  It just maps the sensor number into the correspoonding feedback number
+
+    int iAddr = trunc((iSensor-1) / noOfSensorsPerAddress) + 1;  // Gives The module number, first  part of 1.2, 2.2 etc,.
+    //int iPort = iSensor % 8 - 1;         //Gives the sensor number, second part of 1.2, 1.3 etc  This formula is wrong
+    int iPort = (iSensor -1); //% noOfSensorsPerAddress;         //Gives the sensor number, second part of 1.2, 1.3 etc  
+    //RB Line below can be commented out
+     //Serial.println("SensorNr:" + String(iSensor) +  "  AdressNr: " + String(iAddr) + "  Port: " + String(iPort));
     if (sPayload.toInt() == 0)
     {
       z21.setCANDetector(1, iAddr, iPort, 0x11, 0x0000, 0);
       z21.setCANDetector(1, iAddr, iPort, 0x01, 0x0100, 0);
+      //RB To comment out below
+      //Serial.println ("Set CAN 0");
     }
     else if (sPayload.toInt() == 1)
     {
       z21.setCANDetector(1, iAddr, iPort, 0x11, 0x0000, 0);
       z21.setCANDetector(1, iAddr, iPort, 0x01, 0x1000, 0);
+    //RB To comment out below
+      //Serial.println ("Set CAN 1");
     }
     else
     {
       z21.setCANDetector(1, iAddr, iPort, 0x11, sPayload.toInt(), 0);
+      //RB To comment out below
+      //Serial.println ("Set CAN Payload to value "  +sPayload);
     }
   }
 
@@ -120,6 +132,7 @@ void callback(char *topic, byte *payload, unsigned int length)
     z21.setExtACCInfo(iAdr + 3, sPayload.toInt(), 0); 
   }
 }
+
 
 //--------------------------------------------------------------------------------------------
 byte addIP(byte ip0, byte ip1, byte ip2, byte ip3)

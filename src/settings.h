@@ -9,7 +9,7 @@ int port = 23;
 int iOTAPort = 8266; // ESP32: 3232, ESP8266: 8266
 
 // MQTT Settings
-const char* MQTTBroker = "10.0.0.1";  // IPS Server
+const char* MQTTBroker = "192.168.101.102";  // IPS Server
 const int MQTTPort = 1883;            // IPS MQTT Port
 const int iHeartBeat = 5000;          // Intervall for sending the uptime to MQTT broker 
 
@@ -18,3 +18,5 @@ const int iHeartBeat = 5000;          // Intervall for sending the uptime to MQT
 unsigned char packetBuffer[Z21_UDP_TX_MAX_SIZE +1]; //buffer to hold incoming packet,
 #define maxIP 20  //Größe des IP-Speicher
 
+//Settings for Block Feedback
+const int noOfSensorsPerAddress = 16;
